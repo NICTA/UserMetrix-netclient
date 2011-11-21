@@ -31,9 +31,26 @@ namespace UserMetrix
 {
 	public class Logger
 	{
-		public Logger ()
-		{
+		/** The source class for messages from this logger. */
+		private Type logSource;
+
+		/** The UserMetrix manager responsible for dispatching messages. */
+		private UserMetrix manager;
+
+		public Logger(Type source, UserMetrix logManager) {
+			logSource = source;
+			manager = logManager;
 		}
+
+		public void frustration(string message) {
+			manager.frustration(message, logSource);
+		}
+
+		public void error(string message) {
+			manager.error(message, logSource);
+		}
+
+
 	}
 }
 

@@ -12,6 +12,9 @@ namespace UserMetrix
 			Configuration c = new Configuration(0);
 			UserMetrix.initalise(c);
 			Thread.Sleep(500);
+			Logger l = UserMetrix.getLogger<MainClass>();
+			l.frustration("Unable to configure logger");
+
 			UserMetrix.shutdown();
 		}
 	}

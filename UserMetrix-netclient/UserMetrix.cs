@@ -77,7 +77,15 @@ namespace UserMetrix
 				instance.startLog();
 			}
 		}
-		
+
+		public static Logger getLogger<T>() {
+			if (instance != null) {
+				return new Logger(typeof(T), instance);
+			}
+
+			return null;
+		}
+
 		public static void shutdown() {
 			// Terminate the UserMetrix logging session.
 			if (instance != null) {
@@ -120,6 +128,30 @@ namespace UserMetrix
 
 				logWriter.Write("meta: " + Environment.NewLine);
 				logWriter.Write ("log: " + Environment.NewLine);
+				logWriter.Flush();
+			}
+		}
+
+		public void error(string message, Type source) {
+			if (logWriter != null) {
+				logWriter.Write ("  - type: error" + Environemtn.NewLine);
+				writeMessageDetails(message, source);
+			}
+		}
+
+		public void frustration(string tag, Type source) {
+			if (logWriter != null) {
+				logWriter.Write("  - type: frustration" + Environment.NewLine);
+				writeMessageDetails(tag, source);
+			}
+		}
+
+		private void writeMessageDetails(string message, Type source) {
+			if (logWriter != null) {
+				logWriter.Write("    time: " + instance.getElapsedMilliseconds() + Environment.NewLine);
+				logWriter.Write("    source: " + source.ToString() + Environment.NewLine);
+				logWriter.Write("    message: " + message + Environment.NewLine);
+				logWriter.Flush();
 			}
 		}
 
@@ -129,8 +161,8 @@ namespace UserMetrix
 				timer.Stop();
 				logWriter.Close();
 
-				if (config.getProjectID != 0) {
-					sendLog ();
+				if (config.getProjectID() != 0) {
+					sendLog();
 				}
 			}
 		}
