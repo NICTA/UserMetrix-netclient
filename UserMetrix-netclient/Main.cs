@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace UserMetrix
 {
@@ -10,6 +11,7 @@ namespace UserMetrix
 
 			Configuration c = new Configuration(0);
 			UserMetrix.initalise(c);
+			Thread.Sleep(500);
 			UserMetrix.shutdown();
 		}
 	}

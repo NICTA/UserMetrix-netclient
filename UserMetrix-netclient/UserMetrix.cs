@@ -27,6 +27,7 @@
  */
 using System;
 using System.IO;
+using System.Diagnostics;
 
 namespace UserMetrix
 {
@@ -45,6 +46,8 @@ namespace UserMetrix
 		private string log;
 
 		private StreamWriter logWriter = null;
+
+		private Stopwatch timer;
 
 		private Configuration config;
 
@@ -108,14 +111,32 @@ namespace UserMetrix
 				logWriter.Write("  id: " + clientID);
 
 				// Write the details of the operating system out to the log.
-				logWriter.Write("  os: " + Environment.OSVersion.ToString());
+				logWriter.Write("  os: " + Environment.OSVersion.ToString() + Environment.NewLine);
+
+				// Write the details of the application start time out to the log.
+				logWriter.Write("  start: " + DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") + Environment.NewLine);
+				timer = new Stopwatch();
+				timer.Start();
+
+				logWriter.Write("meta: " + Environment.NewLine);
+				logWriter.Write ("log: " + Environment.NewLine);
 			}
 		}
-		
+
 		private void finishLog() {
 			if (logWriter != null) {
+				logWriter.Write("duration: " + instance.getElapsedMilliseconds() + Environment.NewLine);
+				timer.Stop();
 				logWriter.Close();
+
+				if (config.getProjectID != 0) {
+					sendLog ();
+				}
 			}
+		}
+
+		private long getElapsedMilliseconds() {
+			return timer.ElapsedMilliseconds;
 		}
 
 		private void sendLog() {
