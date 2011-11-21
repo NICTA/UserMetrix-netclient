@@ -50,7 +50,9 @@ namespace UserMetrix
 			manager.error(message, logSource);
 		}
 
-
+		public void error(Exception exception) {
+			manager.error(exception, logSource);
+		}
 	}
 }
 

@@ -134,8 +134,15 @@ namespace UserMetrix
 
 		public void error(string message, Type source) {
 			if (logWriter != null) {
-				logWriter.Write ("  - type: error" + Environemtn.NewLine);
+				logWriter.Write("  - type: error" + Environment.NewLine);
 				writeMessageDetails(message, source);
+			}
+		}
+
+		public void error(Exception error, Type source) {
+			if (logWriter != null) {
+				this.error(error.Message, source);
+				writeStackDetails(error);
 			}
 		}
 
@@ -152,6 +159,28 @@ namespace UserMetrix
 				logWriter.Write("    source: " + source.ToString() + Environment.NewLine);
 				logWriter.Write("    message: " + message + Environment.NewLine);
 				logWriter.Flush();
+			}
+		}
+
+		private void writeStackDetails(Exception error) {
+			if (logWriter != null) {
+				logWriter.Write("    stack:" + Environment.NewLine);
+				StackTrace trace = new StackTrace(error);
+				Console.WriteLine("Frames: " + trace.FrameCount + Environment.NewLine);
+				foreach(StackFrame frame in trace.GetFrames()) {
+					if (frame.GetFileName() == null) {
+						logWriter.Write("      - class: unavailable" + Environment.NewLine);
+					} else {
+						logWriter.Write("      - class: " + frame.GetFileName() + Environment.NewLine);
+					}
+
+					if (frame.GetFileLineNumber() == 0) {
+						logWriter.Write("        line: unavailable" + Environment.NewLine);
+					} else {
+						logWriter.Write("        line: " + frame.GetFileLineNumber() + Environment.NewLine);
+					}
+					logWriter.Write("        method: " + frame.GetMethod().ToString() + Environment.NewLine);
+				}
 			}
 		}
 

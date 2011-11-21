@@ -14,8 +14,18 @@ namespace UserMetrix
 			Thread.Sleep(500);
 			Logger l = UserMetrix.getLogger<MainClass>();
 			l.frustration("Unable to configure logger");
+			try {
+				throw new Exception("WTF?");
+				testMethod();
+			} catch (Exception e) {
+				l.error(e);
+			}
 
 			UserMetrix.shutdown();
+		}
+
+		public static void testMethod() {
+			throw new Exception("Moo!");
 		}
 	}
 }
