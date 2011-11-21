@@ -99,13 +99,16 @@ namespace UserMetrix
 
 		private void startLog() {
 			if (logWriter != null) {
-				logWriter.Write("---" + System.Environment.NewLine);	
+				logWriter.Write("---" + Environment.NewLine);
 				
-				logWriter.Write("v: " + LOG_VERSION + System.Environment.NewLine);				
-				logWriter.Write("system:" + System.Environment.NewLine);
+				logWriter.Write("v: " + LOG_VERSION + Environment.NewLine);
+				logWriter.Write("system:" + Environment.NewLine);
 				
 				// Write the unique client identifier to the log.
-				logWriter.Write ("  id: " + clientID + System.Environment.NewLine);				
+				logWriter.Write("  id: " + clientID);
+
+				// Write the details of the operating system out to the log.
+				logWriter.Write("  os: " + Environment.OSVersion.ToString());
 			}
 		}
 		
