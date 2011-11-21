@@ -45,15 +45,15 @@ namespace UserMetrix
 			projectID = newProjectID;
 		}
 
-		public int getProjectID() {
+		public int GetProjectID() {
 			return projectID;
 		}
 
-		public string getUmDirectory() {
+		public string GetUmDirectory() {
 			return umDirectory;
 		}
 
-		public void setUmDirectory(string directory) {
+		public void SetUmDirectory(string directory) {
 			umDirectory = directory;
 		}
 	}

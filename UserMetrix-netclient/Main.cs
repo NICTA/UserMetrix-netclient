@@ -10,18 +10,20 @@ namespace UserMetrix
 			Console.WriteLine ("Hello World!");
 
 			Configuration c = new Configuration(0);
-			UserMetrix.initalise(c);
+			UserMetrix.Initalise(c);
 			Thread.Sleep(500);
-			Logger l = UserMetrix.getLogger<MainClass>();
-			l.frustration("Unable to configure logger");
+			Logger l = UserMetrix.GetLogger<MainClass>();
+			l.View("main view");
+			l.Event("triggered button.");
+			l.Frustration("Unable to configure logger");
 			try {
 				throw new Exception("WTF?");
 				testMethod();
 			} catch (Exception e) {
-				l.error("gringle", e);
+				l.Error("gringle", e);
 			}
 
-			UserMetrix.shutdown();
+			UserMetrix.Shutdown();
 		}
 
 		public static void testMethod() {

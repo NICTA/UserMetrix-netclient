@@ -40,20 +40,28 @@ namespace UserMetrix
 			manager = logManager;
 		}
 
-		public void frustration(string message) {
-			manager.frustration(message, logSource);
+		public void Event(string tag) {
+			manager.Event(tag, logSource);
 		}
 
-		public void error(string message) {
-			manager.error(message, logSource);
+		public void View(string tag) {
+			manager.View(tag, logSource);
 		}
 
-		public void error(string message, Exception exception) {
-			manager.error(message, exception, logSource);
+		public void Frustration(string message) {
+			manager.Frustration(message, logSource);
 		}
 
-		public void error(Exception exception) {
-			manager.error(exception, logSource);
+		public void Error(string message) {
+			manager.Error(message, logSource);
+		}
+
+		public void Error(string message, Exception exception) {
+			manager.Error(message, exception, logSource);
+		}
+
+		public void Error(Exception exception) {
+			manager.Error(exception, logSource);
 		}
 	}
 }

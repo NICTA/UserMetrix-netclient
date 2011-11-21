@@ -53,30 +53,30 @@ namespace UserMetrix
 			config = configuration;
 		}
 
-		public static void initalise(Configuration config) {
+		public static void Initalise(Configuration config) {
 			if (instance == null) { 
 				instance = new UserMetrix(config);
 
 				// Determine UUID for this client - ID file exists on disk read UUID from file.
-				if (File.Exists(config.getUmDirectory() + idFile)) {
+				if (File.Exists(config.GetUmDirectory() + idFile)){
 					Console.WriteLine("UUID exists");
-					instance.setUniqueID(File.ReadAllText(config.getUmDirectory() + idFile));
+					instance.SetUniqueID(File.ReadAllText(config.GetUmDirectory() + idFile));
 
 				// ID file does not exist - generate a new UUID.
 				} else {
 					Guid id = Guid.NewGuid();
-					StreamWriter file = new StreamWriter(config.getUmDirectory() + idFile);
+					StreamWriter file = new StreamWriter(config.GetUmDirectory() + idFile);
 					file.WriteLine(id.ToString());
-					instance.setUniqueID(idFile.ToString());
+					instance.SetUniqueID(idFile.ToString());
 					file.Close();
 				}
 				
-				instance.setLogDestination(config.getUmDirectory() + logFile);
-				instance.startLog();
+				instance.SetLogDestination(config.GetUmDirectory() + logFile);
+				instance.StartLog();
 			}
 		}
 
-		public static Logger getLogger<T>() {
+		public static Logger GetLogger<T>() {
 			if (instance != null) {
 				return new Logger(typeof(T), instance);
 			}
@@ -84,29 +84,29 @@ namespace UserMetrix
 			return null;
 		}
 
-		public static void shutdown() {
+		public static void Shutdown() {
 			// Terminate the UserMetrix logging session.
 			if (instance != null) {
-				instance.finishLog();
+				instance.FinishLog();
 				instance = null;
 			}
 		}
 
-		private void setUniqueID(String id) {
+		private void SetUniqueID(String id) {
 			clientID = id;
 		}
 
-		private void setLogDestination(string logDestination) {
+		private void SetLogDestination(string logDestination) {
 			log = logDestination;
 
 			if (File.Exists(log)) {
-				sendLog();
+				SendLog();
 			}
 
 			logWriter = new StreamWriter(logDestination);
 		}
 
-		private void startLog() {
+		private void StartLog() {
 			if (logWriter != null) {
 				logWriter.Write("---" + Environment.NewLine);
 				
@@ -130,44 +130,58 @@ namespace UserMetrix
 			}
 		}
 
-		public void error(string message, Type source) {
+		public void View(string tag, Type source) {
+			if (logWriter != null) {
+				logWriter.Write("  - type: view" + Environment.NewLine);
+                WriteMessageDetails(tag, source);
+			}
+		}
+
+		public void Event(string tag, Type source) {
+			if (logWriter != null) {
+				logWriter.Write ("  - type: usage" + Environment.NewLine);
+				WriteMessageDetails(tag, source);
+			}
+		}
+
+		public void Error(string message, Type source) {
 			if (logWriter != null) {
 				logWriter.Write("  - type: error" + Environment.NewLine);
-				writeMessageDetails(message, source);
+				WriteMessageDetails(message, source);
 			}
 		}
 
-		public void error(string message, Exception error, Type source) {
+		public void Error(string message, Exception error, Type source) {
 			if (logWriter != null) {
-				this.error(message, source);
-				writeStackDetails(error);
+				this.Error(message, source);
+				WriteStackDetails(error);
 			}
 		}
 
-		public void error(Exception error, Type source) {
+		public void Error(Exception error, Type source) {
 			if (logWriter != null) {
-				this.error(error.Message, source);
-				writeStackDetails(error);
+				this.Error(error.Message, source);
+				WriteStackDetails(error);
 			}
 		}
 
-		public void frustration(string tag, Type source) {
+		public void Frustration(string tag, Type source) {
 			if (logWriter != null) {
 				logWriter.Write("  - type: frustration" + Environment.NewLine);
-				writeMessageDetails(tag, source);
+				WriteMessageDetails(tag, source);
 			}
 		}
 
-		private void writeMessageDetails(string message, Type source) {
+		private void WriteMessageDetails(string message, Type source) {
 			if (logWriter != null) {
-				logWriter.Write("    time: " + instance.getElapsedMilliseconds() + Environment.NewLine);
+				logWriter.Write("    time: " + instance.GetElapsedMilliseconds() + Environment.NewLine);
 				logWriter.Write("    source: " + source.ToString() + Environment.NewLine);
 				logWriter.Write("    message: " + message + Environment.NewLine);
 				logWriter.Flush();
 			}
 		}
 
-		private void writeStackDetails(Exception error) {
+		private void WriteStackDetails(Exception error) {
 			if (logWriter != null) {
 				logWriter.Write("    stack:" + Environment.NewLine);
 				StackTrace trace = new StackTrace(error);
@@ -189,23 +203,23 @@ namespace UserMetrix
 			}
 		}
 
-		private void finishLog() {
+		private void FinishLog() {
 			if (logWriter != null) {
-				logWriter.Write("duration: " + instance.getElapsedMilliseconds() + Environment.NewLine);
+				logWriter.Write("duration: " + instance.GetElapsedMilliseconds() + Environment.NewLine);
 				timer.Stop();
 				logWriter.Close();
 
-				if (config.getProjectID() != 0) {
-					sendLog();
+				if (config.GetProjectID() != 0) {
+					SendLog();
 				}
 			}
 		}
 
-		private long getElapsedMilliseconds() {
+		private long GetElapsedMilliseconds() {
 			return timer.ElapsedMilliseconds;
 		}
 
-		private void sendLog() {
+		private void SendLog() {
 		}
 	}
 }
