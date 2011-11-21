@@ -2,8 +2,6 @@
  * Logger.cs
  * UserMetrix-netclient
  *
- * VERSION: 1.0.0
- *
  * Copyright (c) 2011 UserMetrix Pty Ltd. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -48,6 +46,10 @@ namespace UserMetrix
 
 		public void error(string message) {
 			manager.error(message, logSource);
+		}
+
+		public void error(string message, Exception exception) {
+			manager.error(message, exception, logSource);
 		}
 
 		public void error(Exception exception) {

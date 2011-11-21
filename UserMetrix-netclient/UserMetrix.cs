@@ -2,8 +2,6 @@
  * UserMetrix.cs
  * UserMetrix-netclient
  *
- * VERSION: 1.0.0
- *
  * Copyright (c) 2011 UserMetrix Pty Ltd. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -136,6 +134,13 @@ namespace UserMetrix
 			if (logWriter != null) {
 				logWriter.Write("  - type: error" + Environment.NewLine);
 				writeMessageDetails(message, source);
+			}
+		}
+
+		public void error(string message, Exception error, Type source) {
+			if (logWriter != null) {
+				this.error(message, source);
+				writeStackDetails(error);
 			}
 		}
 

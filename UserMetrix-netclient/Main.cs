@@ -18,7 +18,7 @@ namespace UserMetrix
 				throw new Exception("WTF?");
 				testMethod();
 			} catch (Exception e) {
-				l.error(e);
+				l.error("gringle", e);
 			}
 
 			UserMetrix.shutdown();
