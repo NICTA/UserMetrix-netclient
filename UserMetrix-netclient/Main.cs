@@ -9,7 +9,7 @@ namespace UserMetrix
 		{
 			Console.WriteLine ("Hello World!");
 
-			Configuration c = new Configuration(0);
+			Configuration c = new Configuration(1);
 			UserMetrix.Initalise(c);
 			Thread.Sleep(500);
 			Logger l = UserMetrix.GetLogger<MainClass>();

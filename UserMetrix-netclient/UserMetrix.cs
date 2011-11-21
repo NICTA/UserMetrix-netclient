@@ -26,6 +26,7 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Net;
 
 namespace UserMetrix
 {
@@ -33,9 +34,9 @@ namespace UserMetrix
 	{
 		const int LOG_VERSION = 1;
 		
-		private static string logFile = "usermetrix.log";
+		const string LOGFILE = "usermetrix.log";
 
-		private static string idFile = "usermetrix.id";
+		const string IDFILE = "usermetrix.id";
 
 		private static UserMetrix instance = null;
 
@@ -58,20 +59,20 @@ namespace UserMetrix
 				instance = new UserMetrix(config);
 
 				// Determine UUID for this client - ID file exists on disk read UUID from file.
-				if (File.Exists(config.GetUmDirectory() + idFile)){
+				if (File.Exists(config.GetUmDirectory() + IDFILE)){
 					Console.WriteLine("UUID exists");
-					instance.SetUniqueID(File.ReadAllText(config.GetUmDirectory() + idFile));
+					instance.SetUniqueID(File.ReadAllText(config.GetUmDirectory() + IDFILE));
 
 				// ID file does not exist - generate a new UUID.
 				} else {
 					Guid id = Guid.NewGuid();
-					StreamWriter file = new StreamWriter(config.GetUmDirectory() + idFile);
+					StreamWriter file = new StreamWriter(config.GetUmDirectory() + IDFILE);
 					file.WriteLine(id.ToString());
-					instance.SetUniqueID(idFile.ToString());
+					instance.SetUniqueID(IDFILE.ToString());
 					file.Close();
 				}
 				
-				instance.SetLogDestination(config.GetUmDirectory() + logFile);
+				instance.SetLogDestination(config.GetUmDirectory() + LOGFILE);
 				instance.StartLog();
 			}
 		}
@@ -120,7 +121,7 @@ namespace UserMetrix
 				logWriter.Write("  os: " + Environment.OSVersion.ToString() + Environment.NewLine);
 
 				// Write the details of the application start time out to the log.
-				logWriter.Write("  start: " + DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") + Environment.NewLine);
+				logWriter.Write("  start: " + DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffzz00") + Environment.NewLine);
 				timer = new Stopwatch();
 				timer.Start();
 
@@ -219,7 +220,64 @@ namespace UserMetrix
 			return timer.ElapsedMilliseconds;
 		}
 
+		private void CleanLogFromDisk() {
+			File.Delete(config.GetUmDirectory() + LOGFILE);
+		}
+
 		private void SendLog() {
+			// TODO can't send logs.
+
+
+        	string boundary = "***" + DateTime.Now.Ticks.ToString("x");
+	        byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("--" + boundary + "\r\n");
+
+	        HttpWebRequest wr = (HttpWebRequest) WebRequest.Create("http://usermetrix.com/projects/" + config.GetProjectID() + "/log");
+	        wr.ContentType = "multipart/form-data;boundary=" + boundary;
+	        wr.Method = "POST";
+	        wr.KeepAlive = true;
+	        wr.Credentials = System.Net.CredentialCache.DefaultCredentials;
+	        Stream rs = wr.GetRequestStream();
+
+			// Write the header of the multipart HTTP POST request.
+			rs.Write(boundarybytes, 0, boundarybytes.Length);
+	        string header = "Content-Disposition: form-data; name=\"upload\"; filename=\"usermetrix.log\"\r\n\r\n";
+	        byte[] headerbytes = System.Text.Encoding.UTF8.GetBytes(header);
+	        rs.Write(headerbytes, 0, headerbytes.Length);
+
+			// Read the log and append it as an attachment to the POST request.
+	        FileStream fileStream = new FileStream(config.GetUmDirectory() + LOGFILE, FileMode.Open, FileAccess.Read);
+	        byte[] buffer = new byte[4096];
+	        int bytesRead = 0;
+	        while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0) {
+	            rs.Write(buffer, 0, bytesRead);
+	        }
+	        fileStream.Close();
+
+			// Write the footer of the multipart HTTP POST request.
+			byte[] trailer = System.Text.Encoding.ASCII.GetBytes("\r\n--" + boundary + "--\r\n");
+        	rs.Write(trailer, 0, trailer.Length);
+	        rs.Close();
+
+			// TO REMOVE.
+	        WebResponse wresp = null;
+	        try {
+	            wresp = wr.GetResponse();
+	            Stream stream2 = wresp.GetResponseStream();
+	            StreamReader reader2 = new StreamReader(stream2);
+	            Console.Write(string.Format("File uploaded, server response is: {0}", reader2.ReadToEnd()));
+	        } catch(Exception ex) {
+	            Console.Write("Error uploading file" + ex.ToString());
+	            if(wresp != null) {
+	                wresp.Close();
+	                wresp = null;
+	            }
+	        } finally {
+	            wr = null;
+	        }
+			// FINISH REMOVE.
+
+			// Delete the log file after succesfully sending logs
+			//CleanLogFromDisk();
 		}
 	}
 }
