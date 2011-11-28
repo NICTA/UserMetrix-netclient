@@ -37,7 +37,7 @@ namespace UserMetrix
 			// Call this once when your application starts.
 			Configuration c = new Configuration(1);
 			UserMetrix.Initalise(c);
-			UserMetrix.SetCanSendLogs(false);
+			UserMetrix.SetCanSendLogs(true);
 
 			// Throughout your application - use this to fetch a logger
 			// for a specific source file.

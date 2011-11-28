@@ -309,25 +309,6 @@ namespace UserMetrix
         	rs.Write(trailer, 0, trailer.Length);
 	        rs.Close();
 
-			// TO REMOVE.
-			/*
-	        WebResponse wresp = null;
-	        try {
-	            wresp = wr.GetResponse();
-	            Stream stream2 = wresp.GetResponseStream();
-	            StreamReader reader2 = new StreamReader(stream2);
-	            Console.Write(string.Format("File uploaded, server response is: {0}", reader2.ReadToEnd()));
-	        } catch(Exception ex) {
-	            Console.Write("Error uploading file" + ex.ToString());
-	            if(wresp != null) {
-	                wresp.Close();
-	                wresp = null;
-	            }
-	        } finally {
-	            wr = null;
-	        }*/
-			// FINISH REMOVE.
-
 			// Delete the log file after succesfully sending logs
 			CleanLogFromDisk();
 		}
