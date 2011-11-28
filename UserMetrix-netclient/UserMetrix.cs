@@ -32,28 +32,42 @@ namespace UserMetrix
 {
 	public class UserMetrix
 	{
-		const int LOG_VERSION = 1;
-		
-		const string LOGFILE = "usermetrix.log";
-
-		const string IDFILE = "usermetrix.id";
-
+		/** The current instance of the UserMetrix logging tool. */
 		private static UserMetrix instance = null;
 
+		/** The current version of the log file this client generates. */
+		const int LOG_VERSION = 1;
+
+		/** The name of the temporary log file we write to disk. */
+		const string LOGFILE = "usermetrix.log";
+
+		/** The name of the persistant file that we store the client ID within. */
+		const string IDFILE = "usermetrix.id";
+
+		/** The UUID for this client. */
 		private string clientID;
 
+		/** The path to the to the log file that we are writing too. */
 		private string log;
 
+		/** The log writer that we use to write log messages. */
 		private StreamWriter logWriter = null;
 
+		/** The timer we use to determine when log events occur. */
 		private Stopwatch timer;
 
+		/** The configuration object for this UserMetrix client. */
 		private Configuration config;
 
-		private UserMetrix(Configuration configuration) {
-			config = configuration;
-		}
+		/** Are we permitted to transmit usage logs to the UserMetrix server? */
+		private Boolean canSendLogs;
 
+		/**
+		 * Initalise the UserMetrix log - call this when you start your
+		 * application.
+		 * 
+		 * \param config The configuration to use for this UserMetrix client.
+		 */
 		public static void Initalise(Configuration config) {
 			if (instance == null) { 
 				instance = new UserMetrix(config);
@@ -77,6 +91,19 @@ namespace UserMetrix
 			}
 		}
 
+	    /**
+      	 * Are we permitted by the user to send usage logs to the UserMetrix server?
+      	 *
+      	 * \param canSend True if we are able to send logs to the UserMetrix server
+      	 * false otherwise.
+      	 */
+    	public static void SetCanSendLogs(Boolean canSend) {
+        	instance.canSendLogs = canSend;
+    	}
+
+		/**
+		 * \return The logger for the supplied class (T).
+		 */
 		public static Logger GetLogger<T>() {
 			if (instance != null) {
 				return new Logger(typeof(T), instance);
@@ -85,6 +112,10 @@ namespace UserMetrix
 			return null;
 		}
 
+		/**
+		 * Shutdown the UserMetrix log - call this when your application gracefully
+		 * exits.
+		 */
 		public static void Shutdown() {
 			// Terminate the UserMetrix logging session.
 			if (instance != null) {
@@ -93,6 +124,20 @@ namespace UserMetrix
 			}
 		}
 
+
+		/**********************************************************************
+		 * Private UserMetrix methods below here.
+		 **********************************************************************/
+		/**
+		 * Private constructor, implemented as singleton - use UserMetrix.Initalise
+		 * to start logging with UserMetrix.
+		 */
+		private UserMetrix(Configuration configuration) {
+			canSendLogs = true;
+			config = configuration;
+		}
+		
+		
 		private void SetUniqueID(String id) {
 			clientID = id;
 		}
@@ -100,6 +145,9 @@ namespace UserMetrix
 		private void SetLogDestination(string logDestination) {
 			log = logDestination;
 
+			// If we have a log already on disk - the application must have aborted
+			// before it had a chance to complete and send the log. Transmit the
+			// Partial log to the UserMetrix server.
 			if (File.Exists(log)) {
 				SendLog();
 			}
@@ -225,8 +273,11 @@ namespace UserMetrix
 		}
 
 		private void SendLog() {
-			// TODO can't send logs.
-
+			if (!canSendLogs) {
+				// Not permitted to send logs - clean log and leave.
+				CleanLogFromDisk();
+				return;
+			}
 
         	string boundary = "***" + DateTime.Now.Ticks.ToString("x");
 	        byte[] boundarybytes = System.Text.Encoding.ASCII.GetBytes("--" + boundary + "\r\n");
@@ -259,6 +310,7 @@ namespace UserMetrix
 	        rs.Close();
 
 			// TO REMOVE.
+			/*
 	        WebResponse wresp = null;
 	        try {
 	            wresp = wr.GetResponse();
@@ -273,11 +325,11 @@ namespace UserMetrix
 	            }
 	        } finally {
 	            wr = null;
-	        }
+	        }*/
 			// FINISH REMOVE.
 
 			// Delete the log file after succesfully sending logs
-			//CleanLogFromDisk();
+			CleanLogFromDisk();
 		}
 	}
 }

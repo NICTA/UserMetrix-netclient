@@ -35,24 +35,40 @@ namespace UserMetrix
 		/** The ID of the project on the UserMetrix server. */
 		private int projectID = 0;	
 
+		/**
+		 * Private constructor.
+		 */
 		private Configuration() {
 		}
 
 		/**
+		 * Constructor
 		 * 
+		 * \param newProjectID The UserMetrix ID for your project.
 		 */
 		public Configuration(int newProjectID) {
 			projectID = newProjectID;
 		}
 
+		/**
+		 * \return The UserMetrix ID for your project.
+		 */
 		public int GetProjectID() {
 			return projectID;
 		}
 
+		/**
+		 * \return The directory UserMetrix can use to store persistant files.
+		 */
 		public string GetUmDirectory() {
 			return umDirectory;
 		}
 
+		/**
+		 * Sets the directory UserMetrix can use to store persistant files.
+		 *
+		 * \param directory The directory UserMetrix can use to store persistant files.
+		 */
 		public void SetUmDirectory(string directory) {
 			umDirectory = directory;
 		}

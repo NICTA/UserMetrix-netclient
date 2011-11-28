@@ -34,35 +34,73 @@ namespace UserMetrix
 
 		/** The UserMetrix manager responsible for dispatching messages. */
 		private UserMetrix manager;
-
+		
+		/**
+		 * Don't call this constructor directly, instead use UserMetrix.GetLogger instead.
+		 */
 		public Logger(Type source, UserMetrix logManager) {
 			logSource = source;
 			manager = logManager;
 		}
-
+		
+		/**
+		 * Use this to log 'events' -- or actions triggered by a user. 'clicked debug',
+		 * 'created new tab', etc. 
+		 *
+		 * \param tag The unique tag to identify for this event, i.e. 'clicked debug'.
+		 */
 		public void Event(string tag) {
 			manager.Event(tag, logSource);
 		}
 
+		/**
+		 * Use this to log 'views' -- or unique screens viewed by the user, i.e.
+		 * 'save dialog', 'main editor', etc.
+		 * 
+		 * \param tag The unique tag to identify this view, i.e. 'save dialog'.
+		 */
 		public void View(string tag) {
 			manager.View(tag, logSource);
 		}
 
+		/**
+		 * Use this to log 'frustration' -- or when a user wants to provide negative
+		 * feedback. This could be implemented by a 'panic' button or some other gesture.
+		 * It allows people to 'spank' your exception and provide a little snippet of text
+		 * about their experiences at that point in time.
+		 * 
+		 * \param message The message or snippet from the user.
+		 */
 		public void Frustration(string message) {
 			manager.Frustration(message, logSource);
 		}
 
+		/**
+		 * Use this to log traditional software exceptions.
+		 *
+		 * \param message A description of the error encountered.
+		 */
 		public void Error(string message) {
 			manager.Error(message, logSource);
 		}
 
+		/**
+		 * Use this to log traditional software exceptions.
+		 * 
+		 * \param message A description of the error encountered.
+		 * \param exception The exception that caused the error.
+		 */
 		public void Error(string message, Exception exception) {
 			manager.Error(message, exception, logSource);
 		}
 
+		/**
+		 * Use this to log traditional software exceptions.
+		 *
+		 * \param exception The exception that caused the error.
+		 */
 		public void Error(Exception exception) {
 			manager.Error(exception, logSource);
 		}
 	}
 }
-

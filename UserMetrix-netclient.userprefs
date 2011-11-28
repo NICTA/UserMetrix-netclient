@@ -3,7 +3,7 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="UserMetrix-netclient/UserMetrix.cs">
     <Files>
       <File FileName="UserMetrix-netclient/Main.cs" Line="15" Column="7" />
-      <File FileName="UserMetrix-netclient/UserMetrix.cs" Line="186" Column="19" />
+      <File FileName="UserMetrix-netclient/UserMetrix.cs" Line="278" Column="1" />
       <File FileName="UserMetrix-netclient/Configuration.cs" Line="56" Column="16" />
       <File FileName="UserMetrix-netclient/Logger.cs" Line="42" Column="1" />
     </Files>
