@@ -225,7 +225,7 @@ namespace UserMetrix
 			if (logWriter != null) {
 				logWriter.Write("    time: " + instance.GetElapsedMilliseconds() + Environment.NewLine);
 				logWriter.Write("    source: " + source.ToString() + Environment.NewLine);
-				logWriter.Write("    message: " + message + Environment.NewLine);
+				logWriter.Write("    message: \"" + message + "\"" + Environment.NewLine);
 				logWriter.Flush();
 			}
 		}

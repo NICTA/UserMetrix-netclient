@@ -1,11 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="UserMetrix-netclient/UserMetrix.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="UserMetrix-netclient/Main.cs">
     <Files>
-      <File FileName="UserMetrix-netclient/Main.cs" Line="15" Column="7" />
-      <File FileName="UserMetrix-netclient/UserMetrix.cs" Line="278" Column="1" />
-      <File FileName="UserMetrix-netclient/Configuration.cs" Line="56" Column="16" />
-      <File FileName="UserMetrix-netclient/Logger.cs" Line="42" Column="1" />
+      <File FileName="UserMetrix-netclient/Main.cs" Line="64" Column="1" />
+      <File FileName="UserMetrix-netclient/UserMetrix.cs" Line="311" Column="1" />
+      <File FileName="UserMetrix-netclient/Configuration.cs" Line="66" Column="1" />
+      <File FileName="UserMetrix-netclient/Logger.cs" Line="71" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
